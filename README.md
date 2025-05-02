@@ -97,9 +97,9 @@ After following the above instructions, you may expect to see this interface:
 
 Example:
 
-- Casual Conversation: If you ask, “Hello, how are you?”, the agent will greet you without performing any RAG.
+- **Casual Conversation**: If you ask, “Hello, how are you?”, the agent will greet you without performing any RAG.
 
-- Specific Query: If you ask, “Provide to me the complete welcome message from the co-directors of the report”, the agent will perform RAG, retrieve relevant chunks, and generate an appropriate response.
+- **Specific Query**: If you ask, “Provide to me the complete welcome message from the co-directors of the report”, the agent will perform RAG, retrieve relevant chunks, and generate an appropriate response.
 
 ## 🔧 Technologies Used
 - **LangChain** - For building the intelligent agent with memory and retrieval-augmented generation capabilities.
