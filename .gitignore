@@ -1,0 +1,9 @@
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environment folder
+rag-agent/
+
+# Ignore Chroma vector database
+chroma-langchain-db/

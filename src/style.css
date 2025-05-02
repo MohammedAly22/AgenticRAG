@@ -1,0 +1,39 @@
+p {
+    font-weight: 500;
+    overflow-y: hidden !important;
+}
+
+/* Submit buttons */
+button[kind="secondary"] {
+    background-color: #5cdf7d !important;
+    color: white;
+    outline: none;
+    border: none;
+    transition: 0.3s;
+}
+
+button[kind="secondary"]:hover,
+button[kind="secondary"]:focus {
+    background-color: #4cc56b !important;
+    color: white !important;
+    outline: none;
+    border: none;
+}
+
+/* Browse files button */
+section[role="presentation"] button {
+    background-color: #f6f6f6 !important;
+    color: #222222;
+    outline: none !important;
+    border: 1px solid #c6c6c6 !important;
+    width: 120px;
+    transition: 0.3s;
+}
+
+section[role="presentation"] button:hover,
+section[role="presentation"] button:focus {
+    background-color: #ffffff !important;
+    color: #222222 !important;
+    outline: none !important;
+    border: 1px solid #c6c6c6 !important;
+}
