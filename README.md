@@ -19,7 +19,7 @@ The application allows users to interact with the AI agent, either by asking que
 
 ## 🏗️ Architecture
 
-<!-- * ADD Image -->
+<!-- * ADD Images -->
 
 The system follows a **Retrieval-Augmented Generation (RAG)** architecture that combines both conversational AI and information retrieval, powered by LangChain. The process involves:
 
@@ -29,6 +29,7 @@ The system follows a **Retrieval-Augmented Generation (RAG)** architecture that 
 4. **RAG Execution**: If the query demands more specific information, the agent performs RAG to retrieve relevant document chunks from the **AI Index Report 2025**.
 5. **Reasoning Steps**: The agent can provide detailed reasoning steps for RAG queries, depending on the user's preference. The agent decides whether to show intermediate results or skip to the final answer.
 
+---
 ### **Basic RAG Architecture**
 
 The RAG system is composed of:
@@ -78,28 +79,43 @@ streamlit run src/app.py
 
 ### **5️⃣ View the Interface**
 After following the above instructions, you may expect to see this interface:
-<!-- * ADD Image here -->
+
+![image](https://github.com/user-attachments/assets/0fcd80b4-f649-4b43-85b4-58ebfc89449a)
+
 
 ## 📖 Usage
 1. Open the app in your browser (default: http://localhost:8501).
 
-2. Enter your `COHERE_API_KEY` in its proprt place, both `trial` and `production` keys works correctly.
+2. Enter your `COHERE_API_KEY` in its proper place; both `trial` and `production` keys work properly.
 
-3. Select an **Embedding Model**  - Note: The `cohere/embed-v4.0` model, when used with a `trial_key`, is limited to processing `100,000` tokens per minute. This rate limit may cause slower processing for large documents like the `AI Index Report 2025` due to enforced waiting between batches. However, despite the slower throughput, it is much more efficient and accurate compared to `sentence-transformers/all-mpnet-base-v2` especially for high-quality semantic embeddings.
+![image](https://github.com/user-attachments/assets/84c8d8d1-8605-48c9-8d62-23d2bd14a536)
 
-4. Upload the `2025 AI Index Report` in the file uploader area. Once, you uploaded it, it starts processing the PDFs, splitting it, creating chunks, and indexing it into a vector store. 
+3. Select an **Embedding Model**  - Note: The `cohere/embed-v4.0` model, when used with a `trial_key`, is limited to processing `100,000` tokens per minute. This rate limit may cause slower processing for large documents like the `AI Index Report 2025` due to enforced waiting between batches. However, despite the slower throughput, it is much more efficient and accurate compared to `sentence-transformers/all-mpnet-base-v2`, especially for high-quality semantic embeddings.
 
-5. Engage in a conversation with the AI agent or ask it to retrieve information from the AI Index Report 2025.
+4. Upload the `2025 AI Index Report` in the file uploader area. Once you upload it, it starts processing the PDF, splitting it, creating chunks, and indexing it into the `Chroma` vector store.
 
-6. The agent will automatically decide whether to perform RAG based on the query type.
+![image](https://github.com/user-attachments/assets/40203fca-c876-4cb0-b856-548cad33db63)
 
-7. If RAG is performed, the agent will retrieve relevant chunks and either present intermediate reasoning steps or the final answer based on your selection.
 
-Example:
+5. Select how many pages you want to render in the UI. Limits the number of previewed pages from the uploaded PDF to improve performance, as rendering more pages takes longer. A maximum of **100** pages can be previewed.
 
-- **Casual Conversation**: If you ask, “Hello, how are you?”, the agent will greet you without performing any RAG.
+6. Engage in a conversation with the AI agent or ask it to retrieve information from the AI Index Report 2025.
 
-- **Specific Query**: If you ask, “Provide to me the complete welcome message from the co-directors of the report”, the agent will perform RAG, retrieve relevant chunks, and generate an appropriate response.
+
+**Examples**:
+
+- **Casual Conversation**: If you ask, *“Hello, how are you?”*, the agent will greet you without performing any RAG.
+
+![image](https://github.com/user-attachments/assets/423be581-04a5-46c1-9829-5560f8febc68)
+
+- **Specific Query**:
+  - If you ask, *“Provide me with the complete welcome message from the co-directors of the report”*, the agent will perform RAG, retrieve relevant chunks, and generate an appropriate response.
+  ![image](https://github.com/user-attachments/assets/e759d61b-c25b-4cd6-9912-2ef4e2c5c881)
+
+  - Here is the same example but with `Show Reasoning Steps` enabled:
+    ![image](https://github.com/user-attachments/assets/df3c6c33-b51d-4fb7-bc58-44af10780bda)
+    
+
 
 ## 🔧 Technologies Used
 - **LangChain** - For building the intelligent agent with memory and retrieval-augmented generation capabilities.
