@@ -56,7 +56,7 @@ The RAG system is composed of:
 ### **1️⃣ Clone the Repository**
 
 ```sh
-git clone https://github.com/user/AgenticRAG.git
+git clone https://github.com/MohammedAly22/AgenticRAG.git
 cd AgenticRAG
 ```
 
