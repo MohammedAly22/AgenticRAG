@@ -73,7 +73,6 @@ with st.sidebar:
     # 1. Cohere API Key
     cohere_api_key = st.text_input(
         "Enter Cohere API Key",
-        value="vs2pzlSKqoQ9zh8BHxz5XQNaeAMNnr2Nxq0Ggb3B",
         type="password",
         placeholder="Enter you Cohere API key",
     )
