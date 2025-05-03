@@ -18,7 +18,8 @@ The application allows users to interact with the AI agent, either by asking que
 ---
 
 ## 🏗️ Architecture
-![image](https://github.com/user-attachments/assets/c4092bb5-480d-4db7-9e94-2507266ffc3b)
+![diagram](https://github.com/user-attachments/assets/4aee611d-54f7-4926-9aa9-240786af0b41)
+
 
 The system follows a **Retrieval-Augmented Generation (RAG)** architecture that combines both conversational AI and information retrieval, powered by LangChain. The process involves:
 
