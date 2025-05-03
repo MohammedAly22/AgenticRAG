@@ -110,10 +110,12 @@ After following the above instructions, you may expect to see this interface:
 
 - **Specific Query**:
   - If you ask, *“Provide me with the complete welcome message from the co-directors of the report”*, the agent will perform RAG, retrieve relevant chunks, and generate an appropriate response.
-  ![image](https://github.com/user-attachments/assets/e759d61b-c25b-4cd6-9912-2ef4e2c5c881)
+
+![image](https://github.com/user-attachments/assets/e759d61b-c25b-4cd6-9912-2ef4e2c5c881)
 
   - Here is the same example but with `Show Reasoning Steps` enabled:
-    ![image](https://github.com/user-attachments/assets/df3c6c33-b51d-4fb7-bc58-44af10780bda)
+
+![image](https://github.com/user-attachments/assets/df3c6c33-b51d-4fb7-bc58-44af10780bda)
     
 
 
