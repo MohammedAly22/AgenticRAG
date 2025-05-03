@@ -120,7 +120,7 @@ After following the above instructions, you may expect to see this interface:
 ## 🔧 Technologies Used
 - **LangChain** - For building the intelligent agent with memory and retrieval-augmented generation capabilities.
 
-- **Cohere** - LLMs used for generation and embedding tasks (providing *responses*).
+- **Cohere** - LLM used for generation and embedding tasks (providing *responses*).
 
 - **Chroma** - Vector databases for storing and retrieving document chunks.
 
