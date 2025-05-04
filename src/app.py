@@ -204,7 +204,7 @@ elif not st.session_state.vector_store:
 
 pdf_preview, chat_area = st.columns(2)
 
-# Pdf preview container
+# PDF preview container
 with pdf_preview:
 
     if uploaded_file:
@@ -219,6 +219,7 @@ with pdf_preview:
                 render_text=True,
             )
 
+# Chat container
 if st.session_state.vector_store:
     with chat_area:
         chat_container = st.container(height=585, border=False)
