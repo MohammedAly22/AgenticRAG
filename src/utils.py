@@ -345,7 +345,7 @@ def process_chunks_with_rate_limit_cohere(
 
             countdown_placeholder.info("🔃 Resuming processing...")
 
-    status_text.success("✅ Batched have been processed successfully!")
+    status_text.success("✅ Batches have been processed successfully!")
     return _vectorstore
 
 
