@@ -16,6 +16,7 @@ from utils import (
     process_query,
     process_chunks_with_rate_limit_cohere,
     add_chunks_to_vector_store_hf_embeddings,
+    reset_memory,
 )
 
 
@@ -108,18 +109,6 @@ with st.sidebar:
     # File uploader
     uploaded_file = st.file_uploader("Upload Your PDF", type="pdf")
 
-    # Number of rendered pages
-    number_of_rendered_page = st.slider(
-        "Number of PDF Rendered Pages",
-        min_value=10,
-        max_value=100,
-        value=30,
-        help="Limits the number of previewed pages from the uploaded "
-        "PDF to improve performance, as rendering more pages takes "
-        "longer. A maximum of `100` pages can be previewed.",
-    )
-    st.session_state.rendered_pages = number_of_rendered_page
-
     if uploaded_file and (
         st.session_state.uploaded_file is None
         or uploaded_file.name != st.session_state.uploaded_file.name
@@ -134,6 +123,7 @@ with st.sidebar:
 
             # Load the PDF
             docs = load_pdf(pdf_path)
+            st.session_state.docs = docs
 
             if cohere_api_key:
                 with st.spinner("Splitting PDF..."):
@@ -162,19 +152,24 @@ with st.sidebar:
                     )
 
                 st.session_state.vector_store = vector_store
-                retriever = vector_store.as_retriever(
-                    search_type="mmr",
-                    search_kwargs={
-                        "k": 10,
-                        "fetch_k": 30,
-                    },
-                )
 
             else:
                 st.error("⚠️ Please enter your Cohere API key to process the document.")
 
             # Clean up the temporary file
             os.unlink(pdf_path)
+
+    # Number of rendered pages
+    number_of_rendered_page = st.slider(
+        "Number of PDF Rendered Pages",
+        min_value=10,
+        max_value=min(len(st.session_state.docs), 100),
+        value=30,
+        help="Limits the number of previewed pages from the uploaded "
+        "PDF to improve performance, as rendering more pages takes "
+        "longer. A maximum of `100` pages can be previewed.",
+    )
+    st.session_state.rendered_pages = number_of_rendered_page
 
     # Show a status indicator for document loading
     if st.session_state.vector_store is not None:
@@ -188,6 +183,7 @@ with st.sidebar:
         if len(st.session_state.messages):
             st.session_state.messages = []
             st.success("✅ Conversation cleared successfully!")
+            reset_memory()
         else:
             st.info("There are no messages to clear!")
 

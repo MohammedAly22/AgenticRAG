@@ -2,7 +2,7 @@ import time
 import sys
 import os
 
-import tiktoken
+import cohere
 
 # Adding project path to sys to solve importing errors
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -42,7 +42,7 @@ def response_generator(text: str):
 
     for char in text:
         yield char
-        time.sleep(0.002)
+        time.sleep(0.00001)
 
 
 def load_pdf(pdf_file_path: str):
@@ -153,8 +153,8 @@ def create_rag_agent_exectutor(
 
     Example:
         >>> rag_executor = create_rag_agent_exectutor(
-                cohere_api_key="your_cohere_api_key", 
-                vector_store=my_vector_store, 
+                cohere_api_key="your_cohere_api_key",
+                vector_store=my_vector_store,
                 number_of_retrieved_documents=5
             )
         >>> response = rag_executor.run("What is the impact of AI on healthcare?")
@@ -169,7 +169,10 @@ def create_rag_agent_exectutor(
 
 
 def process_query(
-    query: str, cohere_api_key: str, agent_avatar: str, number_of_retrieved_documents: int = 5
+    query: str,
+    cohere_api_key: str,
+    agent_avatar: str,
+    number_of_retrieved_documents: int = 5,
 ):
     """
     Processes a user's query using a ReAct RAG agent, retrieving relevant
@@ -239,9 +242,7 @@ def process_query(
                                         st.write("---")
 
                                         st.markdown("##### 📄 Retrived Data:")
-                                        st.write_stream(
-                                            response_generator(f"{step.observation}")
-                                        )
+                                        st.markdown(f"{step.observation}")
                                         tool_calls.append(action.tool_input)
 
             st.write_stream(response_generator(event["output"]))
@@ -257,9 +258,9 @@ def process_query(
 
 def estimate_tokens(text: str):
     """
-    Estimate the number of tokens in a given text string using the 'cl100k_base' encoding from tiktoken.
+    Estimate the number of tokens in a given text string using the tokenizer from Cohere.
 
-    The function uses the tiktoken library to tokenize the provided text and return the number of tokens.
+    The function uses the Cohere library to tokenize the provided text and return the number of tokens.
     This is useful for estimating how much input text will cost in terms of tokens when interacting
     with language models that have token limits.
 
@@ -273,79 +274,77 @@ def estimate_tokens(text: str):
         >>> estimate_tokens("Hello, how are you?")
         5
     """
+    co = cohere.Client()
+    response = co.tokenize(text=text, model="command-a-03-2025")
 
-    tokenizer = tiktoken.get_encoding("cl100k_base")
-    tokens = tokenizer.encode(text)
-    return len(tokens)
+    return len(response.tokens)
 
 
 @st.cache_resource(show_spinner=False)
 def process_chunks_with_rate_limit_cohere(
-    _chunks,
-    _vectorstore,
-    batch_size=150,
-    token_limit=80000,
-    wait_time=65,
+    _chunks, _vectorstore, batch_size=166, token_limit=90000
 ):
     """
-    Processes document chunks in batches, respecting Cohere's rate limit by waiting between batches if the
-    token limit is exceeded. It adds documents to the provided vectorstore and displays the progress in Streamlit.
+    Processes document chunks in batches, respecting Cohere's rate limit by waiting for the remainder
+    of the minute between each batch. It adds documents to the provided vectorstore and displays
+    progress in Streamlit.
 
     Args:
-        - chunks (list): List of document chunks to be processed, where each chunk is assumed to have
-                       a `page_content` attribute representing the text content.
-        - vectorstore (object): An initialized vectorstore instance where the processed documents will be added.
-        - batch_size (int, optional): Number of document chunks to process in each batch. Default is 150.
-        - token_limit (int, optional): Token limit for processing per minute. Default is 80,000 tokens.
-        - wait_time (int, optional): Time (in seconds) to wait between batches to respect the API rate limit.
-                                   Default is 65 seconds.
+        - _chunks (list): List of document chunks (with `page_content`).
+        - _vectorstore (object): Initialized vectorstore instance.
+        - batch_size (int, optional): Number of chunks per batch.
+        - token_limit (int, optional): Token limit per batch.
 
     Returns:
-        - vectorstore (object): The vectorstore instance with the added documents after processing the chunks.
+        - vectorstore (object): The vectorstore with added documents.
     """
-
+    cohere.Client()
     total_batches = (len(_chunks) + batch_size - 1) // batch_size
     progress_bar = st.progress(0)
     status_text = st.empty()
-
     countdown_placeholder = st.empty()
+
+    # mark the start of the rate-limit window
+    window_start = time.time()
+
     for i in range(0, len(_chunks), batch_size):
         current_batch = i // batch_size + 1
         batch = _chunks[i : i + batch_size]
         batch_tokens = sum(estimate_tokens(doc.page_content) for doc in batch)
 
         status_text.markdown(
-            f"🛠️ Processing Batch `[{current_batch}|{total_batches}]` with `{len(batch)}` documents and `~{batch_tokens}` tokens"
+            f"🛠️ Processing Batch `[{current_batch}|{total_batches}]` with `{len(batch)}` docs (~{batch_tokens} tokens)"
         )
 
         if batch_tokens > token_limit:
-            st.warning(
-                f"⚠️ Batch too large (`{batch_tokens}` tokens), splitting further..."
-            )
+            st.warning(f"⚠️ Batch too large (~{batch_tokens} tokens), splitting... ")
             for doc in batch:
                 doc_tokens = estimate_tokens(doc.page_content)
-                st.markdown(f"🛠️ Processing document with ~`{doc_tokens}` tokens")
+                st.markdown(f"🛠️ Processing single doc (~{doc_tokens} tokens)")
                 _vectorstore.add_documents([doc])
                 if doc_tokens > 10000:
                     time.sleep(5)
         else:
             _vectorstore.add_documents(batch)
 
-        # Update progress bar
+        # update progress
         progress = min((i + batch_size) / len(_chunks), 1.0)
         progress_bar.progress(progress)
 
-        # Wait if not the last batch
+        # wait until 60 seconds have elapsed since window_start
         if i + batch_size < len(_chunks):
-            for remaining in range(wait_time, 0, -1):
+            elapsed = time.time() - window_start
+            remaining = max(0, int(60 - elapsed))
+            for sec in range(remaining, 0, -1):
                 countdown_placeholder.info(
-                    f"⌛ Waiting **{remaining}** seconds to respect Cohere API requests rate limit"
+                    f"⌛ Waiting **{sec}**s to respect API rate limit"
                 )
                 time.sleep(1)
-
             countdown_placeholder.info("🔃 Resuming processing...")
+            # reset window
+            window_start = time.time()
 
-    status_text.success("✅ Batches have been processed successfully!")
+    status_text.success("✅ Batched have been processed successfully!")
     return _vectorstore
 
 
@@ -391,3 +390,11 @@ def add_chunks_to_vector_store_hf_embeddings(_chunks, _vector_store):
 
     except Exception as e:
         st.error(e)
+
+
+def reset_memory():
+    rag_agent_executer = st.session_state.rag_agent_executer
+    if not rag_agent_executer:
+        return
+
+    rag_agent_executer.memory.clear()
