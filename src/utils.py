@@ -25,7 +25,7 @@ def response_generator(text: str):
     """
     Generate characters from the input text one by one with a small delay, simulating a typing effect.
 
-    This function yields each character in the input text with a delay of 0.002 seconds between each character,
+    This function yields each character in the input text with a delay of 0.002 seconds between each character.
     making it useful for creating a simulated typing response in an interactive environment.
 
     Args:
@@ -393,6 +393,23 @@ def add_chunks_to_vector_store_hf_embeddings(_chunks, _vector_store):
 
 
 def reset_memory():
+    """
+    Reset the memory of the RAG agent executor stored in the Streamlit session state.
+
+    This function checks if the `rag_agent_executer` exists in the Streamlit session state,
+    and if so, clears its memory to reset the internal state. This can be useful for restarting
+    a conversation or clearing previous interactions stored in memory.
+
+    Args:
+        - None
+
+    Returns:
+        - None
+
+    Raises:
+        - None: If the executor is not found in the session state, the function exits silently.
+    """
+    
     rag_agent_executer = st.session_state.rag_agent_executer
     if not rag_agent_executer:
         return
