@@ -130,6 +130,8 @@ After following the above instructions, you may expect to see this interface:
 ## 🔮 Future Enhancements
 - ✅ Multi-model support for more flexible generation (e.g., OpenAI GPT models).
 
+- ✅ Multi-modal support for chatting with images and tables.
+
 - ✅ Enhanced memory management for long-term, context-aware conversations.
 
 - ✅ Fine-tuned retrieval with advanced filtering and re-ranking techniques.
