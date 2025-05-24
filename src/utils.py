@@ -298,7 +298,6 @@ def process_chunks_with_rate_limit_cohere(
     Returns:
         - vectorstore (object): The vectorstore with added documents.
     """
-    cohere.Client()
     total_batches = (len(_chunks) + batch_size - 1) // batch_size
     progress_bar = st.progress(0)
     status_text = st.empty()
