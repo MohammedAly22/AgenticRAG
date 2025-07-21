@@ -6,6 +6,11 @@
 
 The application allows users to interact with the AI agent, either by asking questions or engaging in casual conversation. The agent responds promptly and smartly, while using RAG for information retrieval only when needed, ensuring efficiency.
 
+## 📒 DeepWiki Explanation
+<a href="https://deepwiki.com/MohammedAly22/AgenticRAG" target="_blank">
+  <img src="https://img.shields.io/badge/Open%20in-DeepWiki-blue?logo=readthedocs&style=for-the-badge" alt="Open in DeepWiki"/>
+</a>
+
 ## 📜 Table of Contents
 
 - [Architecture](#-architecture)
